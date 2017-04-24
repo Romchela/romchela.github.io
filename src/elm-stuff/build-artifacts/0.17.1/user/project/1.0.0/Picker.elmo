@@ -1,0 +1,240 @@
+var _user$project$Picker$pointer = _elm_lang$html$Html_Attributes$style(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'}
+		]));
+var _user$project$Picker$toggle = F2(
+	function (id, entries) {
+		var _p0 = entries;
+		if (_p0.ctor === '[]') {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		} else {
+			var _p2 = _p0._1;
+			var _p1 = _p0._0;
+			return _elm_lang$core$Native_Utils.eq(_p1.id, id) ? A2(
+				_elm_lang$core$List_ops['::'],
+				_elm_lang$core$Native_Utils.update(
+					_p1,
+					{
+						selected: _elm_lang$core$Basics$not(_p1.selected)
+					}),
+				_p2) : A2(
+				_elm_lang$core$List_ops['::'],
+				_p1,
+				A2(_user$project$Picker$toggle, id, _p2));
+		}
+	});
+var _user$project$Picker$start = _elm_lang$core$Native_Platform.outgoingPort(
+	'start',
+	function (v) {
+		return _elm_lang$core$Native_List.toArray(v).map(
+			function (v) {
+				return {name: v.name, version: v.version, url: v.url, optimized: v.optimized};
+			});
+	});
+var _user$project$Picker$startSelected = function (entries) {
+	return _user$project$Picker$start(
+		A2(
+			_elm_lang$core$List$map,
+			function (_) {
+				return _.impl;
+			},
+			A2(
+				_elm_lang$core$List$filter,
+				function (_) {
+					return _.selected;
+				},
+				entries)));
+};
+var _user$project$Picker$update = F2(
+	function (msg, model) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
+			case 'Toggle':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							entries: A2(_user$project$Picker$toggle, _p3._0, model.entries)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Start':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{running: true}),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$Picker$startSelected(model.entries)
+						]));
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{running: false}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+		}
+	});
+var _user$project$Picker$end = _elm_lang$core$Native_Platform.incomingPort(
+	'end',
+	_elm_lang$core$Json_Decode$null(
+		{ctor: '_Tuple0'}));
+var _user$project$Picker$Model = F2(
+	function (a, b) {
+		return {running: a, entries: b};
+	});
+var _user$project$Picker$Entry = F3(
+	function (a, b, c) {
+		return {selected: a, id: b, impl: c};
+	});
+var _user$project$Picker$init = function (impls) {
+	return A2(
+		_elm_lang$core$Platform_Cmd_ops['!'],
+		{
+			running: false,
+			entries: A2(
+				_elm_lang$core$List$indexedMap,
+				_user$project$Picker$Entry(false),
+				impls)
+		},
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
+var _user$project$Picker$Impl = F4(
+	function (a, b, c, d) {
+		return {name: a, version: b, url: c, optimized: d};
+	});
+var _user$project$Picker$End = {ctor: 'End'};
+var _user$project$Picker$subscriptions = function (model) {
+	return _user$project$Picker$end(
+		_elm_lang$core$Basics$always(_user$project$Picker$End));
+};
+var _user$project$Picker$Start = {ctor: 'Start'};
+var _user$project$Picker$Toggle = function (a) {
+	return {ctor: 'Toggle', _0: a};
+};
+var _user$project$Picker$viewEntry = F2(
+	function (running, _p4) {
+		var _p5 = _p4;
+		var _p6 = _p5.impl;
+		return A2(
+			_elm_lang$html$Html$li,
+			running ? _elm_lang$core$Native_List.fromArray(
+				[_user$project$Picker$pointer]) : _elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Picker$pointer,
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Picker$Toggle(_p5.id))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$type$('checkbox'),
+							_elm_lang$html$Html_Attributes$checked(_p5.selected),
+							_elm_lang$html$Html_Attributes$disabled(running)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					_elm_lang$html$Html$text(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						' ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_p6.name,
+							A2(_elm_lang$core$Basics_ops['++'], ' ', _p6.version)))),
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$style(
+							_elm_lang$core$Native_List.fromArray(
+								[
+									{ctor: '_Tuple2', _0: 'color', _1: '#aaa'}
+								]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(
+							_p6.optimized ? ' (optimized)' : '')
+						]))
+				]));
+	});
+var _user$project$Picker$view = function (_p7) {
+	var _p8 = _p7;
+	var _p9 = _p8.running;
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$ul,
+				_p9 ? _elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'color', _1: '#aaa'}
+							]))
+					]) : _elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$Picker$viewEntry(_p9),
+					_p8.entries)),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'width', _1: '100%'}
+							])),
+						_elm_lang$html$Html_Attributes$disabled(_p9),
+						_elm_lang$html$Html_Events$onClick(_user$project$Picker$Start)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Run')
+					]))
+			]));
+};
+var _user$project$Picker$main = {
+	main: _elm_lang$html$Html_App$programWithFlags(
+		{init: _user$project$Picker$init, view: _user$project$Picker$view, update: _user$project$Picker$update, subscriptions: _user$project$Picker$subscriptions}),
+	flags: _elm_lang$core$Json_Decode$list(
+		A2(
+			_elm_lang$core$Json_Decode$andThen,
+			A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string),
+			function (name) {
+				return A2(
+					_elm_lang$core$Json_Decode$andThen,
+					A2(_elm_lang$core$Json_Decode_ops[':='], 'optimized', _elm_lang$core$Json_Decode$bool),
+					function (optimized) {
+						return A2(
+							_elm_lang$core$Json_Decode$andThen,
+							A2(_elm_lang$core$Json_Decode_ops[':='], 'url', _elm_lang$core$Json_Decode$string),
+							function (url) {
+								return A2(
+									_elm_lang$core$Json_Decode$andThen,
+									A2(_elm_lang$core$Json_Decode_ops[':='], 'version', _elm_lang$core$Json_Decode$string),
+									function (version) {
+										return _elm_lang$core$Json_Decode$succeed(
+											{name: name, optimized: optimized, url: url, version: version});
+									});
+							});
+					});
+			}))
+};
